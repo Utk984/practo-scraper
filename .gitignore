@@ -1,5 +1,4 @@
 logs
-.env
 __pycache__
 .DS_Store
 *.pyc
@@ -7,3 +6,10 @@ parser/__pycache__
 parser/.DS_Store
 utils/__pycache__
 utils/.DS_Store
+# env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
