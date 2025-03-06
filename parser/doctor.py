@@ -1,3 +1,5 @@
+import json
+
 import config
 
 
@@ -106,9 +108,9 @@ def parse_doctors_data(response):
             "profile_url": "https://www.practo.com" + details.get("profile_url", ""),
             "first_name": " ".join(name[:2]).strip(),
             "last_name": " ".join(name[2:]).strip(),
-            "qualifications": qualifications,
+            "qualifications": json.dumps(details.get("qualifications", {})),
             "specialization": details.get("specialization", ""),
-            "specialties": specialties,
+            "specialties": json.dumps(details.get("specialties", {})),
             "experience_years": clean_numeric(details.get("experience_years", None)),
             "summary": details.get("summary", ""),
             "services": details.get("non_popular_services", []),

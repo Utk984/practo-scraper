@@ -57,9 +57,9 @@ CREATE TABLE doctors (
     profile_url TEXT,  -- Mapped from "profile_url"
     slug VARCHAR(255) NOT NULL,  -- Mapped from "slug"
     practo_rank INT,  -- Mapped from "practo_rank"
-    qualifications TEXT[],  -- Mapped from "qualifications", list of qualifications - when where what
+    qualifications JSONB,  -- Mapped from "qualifications", list of qualifications - when where what
     specialization TEXT,  -- Mapped from "specialization"
-    specialties TEXT,  -- Mapped from "specialties", list of specialties
+    specialties JSONB,  -- Mapped from "specialties", list of specialties
     experience_years INT,  -- Mapped from "experience_years"
     summary TEXT,  -- Mapped from "summary"
     services TEXT[],  -- Mapped from "Services", list of services
