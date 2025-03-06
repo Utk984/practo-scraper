@@ -5,6 +5,7 @@ from tqdm import tqdm
 
 import config
 from db.insert_db import insert_main_data, insert_relation_data, DatabaseError
+from db.init_db import init_db
 from utils.logger import app_logger, request_logger
 from parser.establishment import parse_establishment_doctor_relation, parse_establishment_data
 from parser.doctor import parse_doctor_establishment_relation, parse_doctors_data
@@ -83,6 +84,13 @@ def parse_and_store_main(response, result_type):
 def main():
     """Main function to process URLs and extract data."""
     app_logger.info("Starting Practo data processing")
+    
+    # Initialize database tables if they don't exist
+    try:
+        init_db()
+    except Exception as e:
+        app_logger.error(f"Failed to initialize database: {str(e)}")
+        sys.exit(1)
     
     # Read URLs
     try:

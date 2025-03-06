@@ -99,7 +99,7 @@ CREATE TABLE doctor_establishment (
     available_days TEXT[],  -- Array of available days (e.g., ['Monday', 'Tuesday'])
     fees TEXT[],  -- Mapped from "fees" (List of amount, type)
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ========================================
