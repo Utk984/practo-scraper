@@ -14,7 +14,7 @@ def init_db():
             SELECT COUNT(*) 
             FROM information_schema.tables 
             WHERE table_schema = 'public' 
-            AND table_name IN ('doctors', 'establishments', 'doctor_establishment')
+            AND table_name IN ('practo_doctors', 'practo_establishments', 'practo_doctor_establishment')
         """)
         table_count = cursor.fetchone()[0]
 

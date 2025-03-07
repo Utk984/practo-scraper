@@ -1,6 +1,7 @@
 import sys
 import time
 import traceback
+import os
 from tqdm import tqdm
 
 import config
@@ -85,6 +86,16 @@ def main():
     """Main function to process URLs and extract data."""
     app_logger.info("Starting Practo data processing")
     
+    # Add a state file to track progress
+    state_file = "scraper_state.txt"
+    start_url_index = 0
+    
+    # Resume from last state if exists
+    if os.path.exists(state_file):
+        with open(state_file, "r") as f:
+            start_url_index = int(f.read().strip())
+        app_logger.info(f"Resuming from URL index {start_url_index}")
+    
     # Initialize database tables if they don't exist
     try:
         init_db()
@@ -112,15 +123,20 @@ def main():
     }
 
     # Process each URL
-    for url_index, link in enumerate(urls):
+    for url_index, link in enumerate(urls[start_url_index:], start=start_url_index):
         try:
             app_logger.info(f"Processing URL {url_index+1}/{len(urls)}: {link[:50]}...")
+            
+            # Save current state
+            with open(state_file, "w") as f:
+                f.write(str(url_index))
             
             # Get initial response
             try:
                 response = make_request(link)
             except RequestError as e:
                 app_logger.error(f"Failed to fetch URL {link}: {str(e)}")
+                time.sleep(30)
                 continue
                 
             # Determine result count based on URL type
@@ -136,9 +152,11 @@ def main():
                 
                 if count == 0:
                     app_logger.warning(f"No results found for URL: {link}")
+                    time.sleep(30)
                     continue
             except (KeyError, TypeError, ValueError) as e:
                 app_logger.error(f"Error parsing result count: {str(e)}")
+                time.sleep(30)
                 continue
                 
             # Process each page of results
@@ -207,12 +225,20 @@ def main():
         except Exception as e:
             app_logger.error(f"Failed to process URL {link}: {str(e)}")
             app_logger.debug(traceback.format_exc())
+            # Add a longer sleep on error to prevent rapid retries
+            time.sleep(30)
+            continue
+    
+    # Clean up state file when done
+    if os.path.exists(state_file):
+        os.remove(state_file)
     
     app_logger.info("Practo data processing completed")
 
 
 if __name__ == "__main__":
     try:
+        print(config.DATABASE_URL)
         main()
     except KeyboardInterrupt:
         app_logger.info("Process interrupted by user")

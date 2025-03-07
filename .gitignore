@@ -13,3 +13,8 @@ utils/.DS_Store
 .env.test.local
 .env.production.local
 
+# state files
+scraper_state.txt
+
+# duplicate files
+relations.csv

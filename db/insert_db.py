@@ -118,9 +118,9 @@ def insert_relation_data(relation, count, bed_count, amb_count, practo_id, key):
         DatabaseError: If database operations fail
     """
     mapping = {
-        "hospital": "UPDATE establishments SET doctor_count = %s, number_of_beds = %s, number_of_ambulances = %s WHERE practo_uuid = %s",
-        "clinic": "UPDATE establishments SET doctor_count = %s, number_of_beds = %s, number_of_ambulances = %s WHERE practo_uuid = %s",
-        "doctor": "UPDATE doctors SET establishment_count = %s WHERE practo_uuid = %s",
+        "hospital": "UPDATE practo_establishments SET doctor_count = %s, number_of_beds = %s, number_of_ambulances = %s WHERE practo_uuid = %s",
+        "clinic": "UPDATE practo_establishments SET doctor_count = %s, number_of_beds = %s, number_of_ambulances = %s WHERE practo_uuid = %s",
+        "doctor": "UPDATE practo_doctors SET establishment_count = %s WHERE practo_uuid = %s",
     }
 
     db_logger.info(f"Inserting relation data for {key} with ID {practo_id}")

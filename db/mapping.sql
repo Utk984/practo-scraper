@@ -1,7 +1,7 @@
 -- ========================================
--- Table: establishments
+-- Table: practo_establishments
 -- ========================================
-CREATE TABLE establishments (
+CREATE TABLE practo_establishments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     practo_uuid VARCHAR(255) UNIQUE NOT NULL,  -- Mapped from "practo_id"
     name VARCHAR(255) NOT NULL,  -- Mapped from "name"
@@ -45,9 +45,9 @@ CREATE TABLE establishments (
 );
 
 -- ========================================
--- Table: doctors
+-- Table: practo_doctors
 -- ========================================
-CREATE TABLE doctors (
+CREATE TABLE practo_doctors (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     practo_uuid VARCHAR(255) UNIQUE NOT NULL,  -- Mapped from "practo_id"
     active BOOLEAN DEFAULT true,  -- Assuming active status
@@ -87,12 +87,12 @@ CREATE TABLE doctors (
 );
 
 -- ========================================
--- Table: doctor_establishment (Many-to-Many)
+-- Table: practo_doctor_establishment (Many-to-Many)
 -- ========================================
-CREATE TABLE doctor_establishment (
+CREATE TABLE practo_doctor_establishment (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    doctor_id UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
-    establishment_id UUID NOT NULL REFERENCES establishments(id) ON DELETE CASCADE,
+    doctor_id UUID NOT NULL REFERENCES practo_doctors(id) ON DELETE CASCADE,
+    establishment_id UUID NOT NULL REFERENCES practo_establishments(id) ON DELETE CASCADE,
     active BOOLEAN DEFAULT true,  -- Mapped from "status"
     begin_time TIME,  -- Start time
     end_time TIME,    -- End time
@@ -105,7 +105,7 @@ CREATE TABLE doctor_establishment (
 -- ========================================
 -- Trigger Function for Updating Timestamps
 -- ========================================
-CREATE OR REPLACE FUNCTION update_updated_at_column()
+CREATE OR REPLACE FUNCTION update_practo_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = CURRENT_TIMESTAMP;
@@ -116,25 +116,25 @@ $$ LANGUAGE plpgsql;
 -- ========================================
 -- Triggers for Auto-updating 'updated_at'
 -- ========================================
-CREATE TRIGGER trg_update_establishments_updated_at
-BEFORE UPDATE ON establishments
+CREATE TRIGGER trg_update_practo_establishments_updated_at
+BEFORE UPDATE ON practo_establishments
 FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
+EXECUTE PROCEDURE update_practo_updated_at_column();
 
-CREATE TRIGGER trg_update_doctors_updated_at
-BEFORE UPDATE ON doctors
+CREATE TRIGGER trg_update_practo_doctors_updated_at
+BEFORE UPDATE ON practo_doctors
 FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
+EXECUTE PROCEDURE update_practo_updated_at_column();
 
-CREATE TRIGGER trg_update_doctor_establishment_updated_at
-BEFORE UPDATE ON doctor_establishment
+CREATE TRIGGER trg_update_practo_doctor_establishment_updated_at
+BEFORE UPDATE ON practo_doctor_establishment
 FOR EACH ROW
-EXECUTE PROCEDURE update_updated_at_column();
+EXECUTE PROCEDURE update_practo_updated_at_column();
 
 -- ========================================
 -- Indexes for Performance
 -- ========================================
-CREATE INDEX idx_establishments_slug ON establishments(slug);
-CREATE INDEX idx_doctors_slug ON doctors(slug);
-CREATE INDEX idx_doctor_establishment_doctor_id ON doctor_establishment(doctor_id);
-CREATE INDEX idx_doctor_establishment_establishment_id ON doctor_establishment(establishment_id);
+CREATE INDEX idx_practo_establishments_slug ON practo_establishments(slug);
+CREATE INDEX idx_practo_doctors_slug ON practo_doctors(slug);
+CREATE INDEX idx_practo_doctor_establishment_doctor_id ON practo_doctor_establishment(doctor_id);
+CREATE INDEX idx_practo_doctor_establishment_establishment_id ON practo_doctor_establishment(establishment_id);

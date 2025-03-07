@@ -77,29 +77,29 @@ def generate_do_update_clause(columns):
 DOCTOR_DO_UPDATE_CLAUSE = generate_do_update_clause(DOCTOR_COLUMNS)
 ESTABLISHMENT_DO_UPDATE_CLAUSE = generate_do_update_clause(ESTABLISHMENT_COLUMNS)
 
-DOCTOR_INSERT_QUERY = f"""INSERT INTO doctors ({', '.join(DOCTOR_COLUMNS)}) 
+DOCTOR_INSERT_QUERY = f"""INSERT INTO practo_doctors ({', '.join(DOCTOR_COLUMNS)}) 
     VALUES ({', '.join(['%s'] * len(DOCTOR_COLUMNS))})
     ON CONFLICT (practo_uuid) DO UPDATE SET {DOCTOR_DO_UPDATE_CLAUSE};"""
 
-ESTABLISHMENT_INSERT_QUERY = f"""INSERT INTO establishments ({', '.join(ESTABLISHMENT_COLUMNS)}) 
+ESTABLISHMENT_INSERT_QUERY = f"""INSERT INTO practo_establishments ({', '.join(ESTABLISHMENT_COLUMNS)}) 
     VALUES ({', '.join(['%s'] * len(ESTABLISHMENT_COLUMNS))})
     ON CONFLICT (practo_uuid) DO UPDATE SET {ESTABLISHMENT_DO_UPDATE_CLAUSE};"""
 
-DOCTOR_INSERT_QUERY_SMALL = """INSERT INTO doctors (
+DOCTOR_INSERT_QUERY_SMALL = """INSERT INTO practo_doctors (
     practo_uuid, first_name, last_name, profile_photo, profile_url, slug, experience_years)
     VALUES (%s, %s, %s, %s, %s, %s, %s)
     ON CONFLICT (practo_uuid) DO NOTHING;"""
 
-ESTABLISHMENT_INSERT_QUERY_SMALL = """INSERT INTO establishments (
+ESTABLISHMENT_INSERT_QUERY_SMALL = """INSERT INTO practo_establishments (
     practo_uuid, name, slug, profile_url, city, state, locality, latitude, longitude, street_address)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ON CONFLICT (practo_uuid) DO NOTHING;"""
 
-RELATIONS_INSERT_QUERY = """INSERT INTO doctor_establishment (
+RELATIONS_INSERT_QUERY = """INSERT INTO practo_doctor_establishment (
     doctor_id, establishment_id, fees, begin_time, end_time, available_days) VALUES (
-    (SELECT id FROM doctors WHERE practo_uuid = %s),
-    (SELECT id FROM establishments WHERE practo_uuid = %s), 
+    (SELECT id FROM practo_doctors WHERE practo_uuid = %s),
+    (SELECT id FROM practo_establishments WHERE practo_uuid = %s), 
     %s::TEXT[], %s::TIME, %s::TIME, %s::TEXT[]);"""
 
-CHECK_EXISTENCE_QUERY = """SELECT EXISTS (SELECT 1 FROM doctors WHERE practo_uuid = %s),
-    EXISTS (SELECT 1 FROM establishments WHERE practo_uuid = %s);"""
+CHECK_EXISTENCE_QUERY = """SELECT EXISTS (SELECT 1 FROM practo_doctors WHERE practo_uuid = %s),
+    EXISTS (SELECT 1 FROM practo_establishments WHERE practo_uuid = %s);"""
